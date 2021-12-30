@@ -48,7 +48,7 @@ const sortedMeals = DUMMY_MEALS.sort( function ( a, b ) {
 } )
 
 const AvailableMeals = () => {
-  const mealsList = DUMMY_MEALS.map( meal => (
+  const mealsList = sortedMeals.map( meal => (
     <MealItem
       key={meal.id}
       id={meal.id}
