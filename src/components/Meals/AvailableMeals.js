@@ -32,8 +32,16 @@ const DUMMY_MEALS = [
   },
 ];
 
+const sortedMeals = DUMMY_MEALS.sort( function ( a, b ) {
+  let nameA = a.name.toLowerCase()
+  let nameB = b.name.toLowerCase()
+
+  if ( nameA < nameB ) //sort string ascending
+    return -1
+} )
+
 const AvailableMeals = () => {
-  const mealsList = DUMMY_MEALS.map( meal => (
+  const mealsList = sortedMeals.map( meal => (
     <MealItem
       key={meal.id}
       id={meal.id}
