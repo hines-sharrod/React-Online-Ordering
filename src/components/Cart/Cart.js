@@ -8,15 +8,7 @@ import classes from './Cart.module.css'
 const Cart = props => {
   const cartCtx = useContext( CartContext )
 
-  const elegantTotalAmount = '$' + cartCtx.totalAmount.toFixed( 2 )
-  
-  const cartItemRemoveHandler = id => {
-    
-  }
- 
-  const cartItemAddHandler = item => {
-
-  }
+  const elegantTotalAmount = '$' + parseFloat(cartCtx.totalAmount.toFixed( 2 ))
   
   const cartList = cartCtx.items.map( item => (
     <CartItem
@@ -24,8 +16,8 @@ const Cart = props => {
       name={item.name}
       amount={item.amount}
       price={item.price}
-      onRemove={() => cartItemRemoveHandler(item.id)}
-      onAdd={() => cartItemAddHandler(item)}
+      onRemove={() => cartCtx.removeItem(item.id)}
+      onAdd={() => cartCtx.addItem({...item, amount: 1})}
     />
   ))
 
@@ -40,7 +32,7 @@ const Cart = props => {
         <button className={classes[ 'button--alt' ]} onClick={props.onHideCart}>
           Close
         </button>
-        <button className={classes.button}>Order</button>
+        {cartCtx.items.length > 0 && <button className={classes.button}>Order</button>}
       </div>
     </Modal>
   )
