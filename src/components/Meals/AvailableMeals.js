@@ -1,54 +1,78 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
 
-import Card from '../UI/Card'
-import classes from './AvailableMeals.module.css'
-import MealItem from './MealItem';
-
-
-const DUMMY_MEALS = [
-  {
-    id: 'm1',
-    name: 'Sushi',
-    description: 'Finest fish and veggies',
-    price: 22.99,
-  },
-  {
-    id: 'm2',
-    name: 'Schnitzel',
-    description: 'A german specialty!',
-    price: 16.5,
-  },
-  {
-    id: 'm3',
-    name: 'Barbecue Burger',
-    description: 'American, raw, meaty',
-    price: 12.99,
-  },
-  {
-    id: 'm4',
-    name: 'Green Bowl',
-    description: 'Healthy...and green...',
-    price: 18.99,
-  },
-];
-
-const sortedMeals = [ ...DUMMY_MEALS ].sort( function ( a, b ) {
-  let nameA = a.name.toLowerCase()
-  let nameB = b.name.toLowerCase()
-
-  if ( nameA < nameB ) { //sort string ascending
-    return -1
-  }
-
-  if ( nameA > nameB ) {
-    return 1
-  }
-
-  return 0 //default return value (no sorting)
-} )
+import Card from "../UI/Card";
+import classes from "./AvailableMeals.module.css";
+import MealItem from "./MealItem";
 
 const AvailableMeals = () => {
-  const mealsList = sortedMeals.map( meal => (
+  const [mealsData, setMealsData] = useState([]);
+  const [isLoading, setIsLoading] = useState();
+  const [httpError, setHttpError] = useState(false);
+
+  useEffect(() => {
+    const fetchMeals = async () => {
+      setIsLoading(true);
+      const response = await fetch(
+        "https://react-online-ordering-default-rtdb.firebaseio.com/meals.json"
+      );
+
+      if (!response.ok) {
+        throw new Error("Something has gone wrong");
+      }
+
+      const data = await response.json();
+
+      let mealsList = [];
+
+      for (const key in data) {
+        mealsList.push({
+          id: key,
+          name: data[key].name,
+          description: data[key].description,
+          price: data[key].price
+        });
+      }
+
+      mealsList.sort(function (a, b) {
+        let nameA = a.name.toLowerCase();
+        let nameB = b.name.toLowerCase();
+
+        if (nameA < nameB) {
+          //sort string ascending
+          return -1;
+        }
+
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        return 0; //default return value (no sorting)
+      });
+
+      setMealsData(mealsList);
+
+      setIsLoading(false);
+    };
+
+    fetchMeals().catch((error) => {
+      setHttpError(error.message);
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading) {
+    return (
+      <section className={classes["meals-loading-text"]}>Loading...</section>
+    );
+  }
+
+  if (httpError) {
+    return (
+      <section className={classes["meals-loading-text"]}>{httpError}</section>
+    );
+  }
+
+  const menu = mealsData.map((meal) => (
     <MealItem
       key={meal.id}
       id={meal.id}
@@ -56,17 +80,15 @@ const AvailableMeals = () => {
       desc={meal.description}
       price={meal.price}
     />
-  ) )
+  ));
 
   return (
     <section className={classes.meals}>
       <Card>
-        <ul>
-          {mealsList}
-        </ul>
+        <ul>{menu}</ul>
       </Card>
     </section>
-  )
-}
+  );
+};
 
-export default AvailableMeals
+export default AvailableMeals;
