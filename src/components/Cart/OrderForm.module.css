@@ -1,11 +1,16 @@
 .form {
   margin: 1rem 0;
-  height: 19rem;
-  overflow: auto;
+}
+
+.formRow {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
 }
 
 .formGroup {
   margin-bottom: 0.5rem;
+  width: 49%;
 }
 
 .formGroup label {
@@ -24,8 +29,8 @@
 
 .actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
+  justify-content: end;
+  margin-top: 1rem;
 }
 
 .actions button {

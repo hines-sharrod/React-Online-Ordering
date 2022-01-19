@@ -35,6 +35,13 @@ const OrderForm = (props) => {
     const cityIsValid = isNotEmpty(city);
     const zipcodeIsValid = isFiveChar(zipcode);
 
+    setFormFieldsValidity({
+      name: nameIsValid,
+      address: addressIsValid,
+      city: cityIsValid,
+      zipcode: zipcodeIsValid
+    });
+
     const formIsValid =
       nameIsValid && addressIsValid && cityIsValid && zipcodeIsValid;
 
@@ -45,26 +52,47 @@ const OrderForm = (props) => {
     console.log(name, address, city, zipcode);
   };
 
+  const nameInvalidClass = !formFieldsValidity.name ? classes.invalid : "";
+  const addressInvalidClass = !formFieldsValidity.address
+    ? classes.invalid
+    : "";
+  const cityInvalidClass = !formFieldsValidity.city ? classes.invalid : "";
+  const zipcodeInvalidClass = !formFieldsValidity.zipcode
+    ? classes.invalid
+    : "";
+
   return (
-    <form onSubmit={orderFormSubmitHandler}>
-      <div className={classes.formGroup}>
-        <label htmlFor="name">Name</label>
-        <input type="text" id="name" ref={nameRef} />
+    <form className={classes.form} onSubmit={orderFormSubmitHandler}>
+      <div className={classes.formRow}>
+        <div className={`${classes.formGroup} ${nameInvalidClass}`}>
+          <label htmlFor="name">Name</label>
+          <input type="text" id="name" ref={nameRef} />
+          {!formFieldsValidity.name && <p>The name field cannot be empty.</p>}
+        </div>
+
+        <div className={`${classes.formGroup} ${addressInvalidClass}`}>
+          <label htmlFor="address">Address</label>
+          <input type="text" id="address" ref={addressRef} />
+          {!formFieldsValidity.address && (
+            <p>The address field cannot be empty.</p>
+          )}
+        </div>
       </div>
 
-      <div className={classes.formGroup}>
-        <label htmlFor="address">Address</label>
-        <input type="text" id="address" ref={addressRef} />
-      </div>
+      <div className={classes.formRow}>
+        <div className={`${classes.formGroup} ${cityInvalidClass}`}>
+          <label htmlFor="city">City</label>
+          <input type="text" id="city" ref={cityRef} />
+          {!formFieldsValidity.city && <p>The city field cannot be empty.</p>}
+        </div>
 
-      <div className={classes.formGroup}>
-        <label htmlFor="city">City</label>
-        <input type="text" id="city" ref={cityRef} />
-      </div>
-
-      <div className={classes.formGroup}>
-        <label htmlFor="zipcode">Zip Code</label>
-        <input type="text" id="zipcode" ref={zipcodeRef} />
+        <div className={`${classes.formGroup} ${zipcodeInvalidClass}`}>
+          <label htmlFor="zipcode">Zip Code</label>
+          <input type="text" id="zipcode" ref={zipcodeRef} />
+          {!formFieldsValidity.zipcode && (
+            <p>Please enter a valid 5 character zipcode.</p>
+          )}
+        </div>
       </div>
 
       <div className={classes.actions}>
