@@ -49,7 +49,7 @@ const OrderForm = (props) => {
       return;
     }
 
-    console.log(name, address, city, zipcode);
+    props.submitOrder(orderFormInfo);
   };
 
   const nameInvalidClass = !formFieldsValidity.name ? classes.invalid : "";
