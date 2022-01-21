@@ -99,7 +99,7 @@ const OrderForm = (props) => {
         <button type="button" onClick={props.hideCart}>
           Cancel
         </button>
-        <button className={classes.submit}>Confirm</button>
+        <button className={classes.submit}>Order</button>
       </div>
     </form>
   );

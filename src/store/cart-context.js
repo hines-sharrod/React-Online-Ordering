@@ -1,10 +1,12 @@
-import React from 'react'
+import React from "react";
 
-const CartContext = React.createContext( {
+// set the properties of context here so they will appear in autofill
+const CartContext = React.createContext({
   items: [],
   totalAmount: 0,
-  addItem: item => {},
-  removeItem: id => {}
-} )
+  addItem: (item) => {},
+  removeItem: (id) => {},
+  resetCart: () => {}
+});
 
 export default CartContext;

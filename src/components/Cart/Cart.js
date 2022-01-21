@@ -9,6 +9,8 @@ import OrderForm from "./OrderForm";
 const Cart = (props) => {
   const cartCtx = useContext(CartContext);
   const [orderForm, setOrderForm] = useState(false);
+  const [isOrdering, setIsOrdering] = useState(false);
+  const [orderSubmitted, setOrderSubmitted] = useState(false);
 
   const elegantTotalAmount = "$" + parseFloat(cartCtx.totalAmount.toFixed(2));
 
@@ -34,14 +36,16 @@ const Cart = (props) => {
       </button>
       {cartCtx.items.length > 0 && (
         <button className={classes.button} onClick={orderFormHandler}>
-          Order
+          Checkout
         </button>
       )}
     </div>
   );
 
-  const orderSubmitHandler = (userData) => {
-    fetch(
+  const orderSubmitHandler = async (userData) => {
+    setIsOrdering(true);
+
+    await fetch(
       "https://react-online-ordering-default-rtdb.firebaseio.com/orders.json",
       {
         method: "POST",
@@ -51,25 +55,50 @@ const Cart = (props) => {
         })
       }
     );
+
+    setIsOrdering(false);
+    setOrderSubmitted(true);
+    cartCtx.resetCart();
   };
 
-  return (
-    <Modal onBackdropClose={props.onHideCart}>
-      {cartList}
-      <div className={classes.total}>
-        <span>Total Amount</span>
-        <span>{elegantTotalAmount}</span>
-      </div>
+  let modalContent;
 
-      {orderForm && (
-        <OrderForm
-          hideCart={props.onHideCart}
-          submitOrder={orderSubmitHandler}
-        />
-      )}
-      {!orderForm && cartActions}
-    </Modal>
-  );
+  if (isOrdering) {
+    modalContent = <p>Submitting Order...</p>;
+  } else if (!isOrdering && !orderSubmitted) {
+    modalContent = (
+      <>
+        {cartList}
+        <div className={classes.total}>
+          <span>Total Amount</span>
+          <span>{elegantTotalAmount}</span>
+        </div>
+
+        {orderForm && (
+          <OrderForm
+            hideCart={props.onHideCart}
+            submitOrder={orderSubmitHandler}
+          />
+        )}
+        {!orderForm && cartActions}
+      </>
+    );
+  } else {
+    modalContent = (
+      <>
+        <p style={{ textAlign: "center" }}>
+          You have successfully submitted your order.
+        </p>
+        <div className={classes.actions}>
+          <button className={classes.button} onClick={props.onHideCart}>
+            Close
+          </button>
+        </div>
+      </>
+    );
+  }
+
+  return <Modal onBackdropClose={props.onHideCart}>{modalContent}</Modal>;
 };
 
 export default Cart;
